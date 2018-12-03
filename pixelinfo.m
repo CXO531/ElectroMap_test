@@ -174,7 +174,7 @@ ylabel('Fluorescence Intensity (arb units)');
 axis tight 
 %APD
 axes(handles.APD)
-mapsbabyonepix((get(g1data.aptime1,'Value')),str2num(get(g1data.framerate,'String')),30,g1data.mask,g1data.images,g1data.averageBeat,row,col,handles.cm(handles.points),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.afterGUI,'String')),get(g1data.apdbl,'Value'),str2num(get(g1data.apdblnum,'String')),str2num(get(g1data.taustart,'String')),str2num(get(g1data.taufinish,'String')),get(handles.normalise,'Value'));
+mapsbabyonepix((get(g1data.aptime1,'Value')),str2num(get(g1data.framerate,'String')),30,g1data.mask,g1data.images,g1data.averageBeat,row,col,handles.cm(handles.points),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.afterGUI,'String')),get(g1data.apdbl,'Value'),str2num(get(g1data.apdblnum,'String')),str2num(get(g1data.taustart,'String')),str2num(get(g1data.taufinish,'String')),get(handles.normalise,'Value'),get(g1data.tfilt,'Value'));
 xlabel('Time (ms)')
 ylabel('Fluorescence Intensity (arb units)');
 axis tight
