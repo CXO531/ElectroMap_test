@@ -466,7 +466,7 @@ if saveopt == 4 || saveopt == 5
 [filename,pathname] = uiputfile({'*.mat'},'Hi');
 end
 % analysis options 
-opt1=get(handles.apdopt,'Value');opt2=get(handles.Tauopt,'Value');opt3=get(handles.DIopt,'Value');opt4=get(handles.ttpopt,'Value');opt5=get(handles.maxuopt,'Value');
+opt1=get(handles.apdopt,'Value');opt2=get(handles.Tauopt,'Value');opt3=0;opt4=get(handles.ttpopt,'Value');opt5=get(handles.maxuopt,'Value');
 
 [~,~,ext] = fileparts(filename);
 file=[pathname,filename];
