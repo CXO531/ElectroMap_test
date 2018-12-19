@@ -1,5 +1,15 @@
-% function for map showing signal levels across tissue
+
 function [map]=fluo_map(framerate,maskedimage,imagestack,tfilt,avbeat)
+% function for map showing signal levels across tissue
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
 
 [rows cols] = size(avbeat(:,:,1))
  

@@ -1,4 +1,14 @@
 function varargout = pixelinfo(varargin)
+% function for compare pixels GUI (Name issue will be rectified in future release)
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
 % PIXELINFO MATLAB code for pixelinfo.fig
 %      PIXELINFO, by itself, creates a new PIXELINFO or raises the existing
 %      singleton*.
@@ -62,10 +72,16 @@ im=g1data.I;
 imshow(im);
 wb=waitbar(0.5,'Transfering Maps');
 %maps 
-[handles.map,~,handles.alll]=mapsbaby(str2num(get(g1data.framerate,'String')),handles.t,g1data.I,g1data.images,g1data.averageBeat,g1data.outlier,str2num(get(g1data.cmin,'String')),str2num(get(g1data.cmax,'String')),get(g1data.tfilt,'Value'),str2num(get(g1data.beforeGUI,'String')),get(g1data.apdbl,'Value'),str2num(get(g1data.apdblnum,'String')));
-[handles.isomap,~,~,~,~,~,~,~,~,~,handles.vout,handles.quivers_Xout,handles.quivers_Yout,handles.quivers_vxout,handles.quivers_vyout]...
-    =cvmap(str2num(get(g1data.pixelsize,'String')),str2num(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,1,str2num(get(g1data.minvel,'String')),str2num(get(g1data.maxvel,'String')),get(g1data.velalgo,'Value'),...
-     str2num(get(g1data.MINt,'String')),str2num(get(g1data.MAXt,'String')),str2num(get(g1data.winsize,'String')),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.wint,'String')),0,str2num(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2num(get(g1data.splineN,'String'))); %do iso map on opening to speed up later
+handles.map=g1data.apdmap;
+handles.alll=g1data.apalll;
+
+handles.isomap=g1data.actmap;
+handles.vout=g1data.vout;
+handles.quivers_Xout=g1data.quivers_Xout;
+handles.quivers_Yout=g1data.quivers_Yout;
+handles.quivers_vxout=g1data.quivers_vxout;
+handles.quivers_vyout=g1data.quivers_vyout;
+
 delete(wb)
 handles.points=0;
 handles.rows=[];

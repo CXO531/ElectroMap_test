@@ -1,8 +1,18 @@
-%% Function that picks out amplitude and APD alternans
 function [normsig,sigPks,siglocs,bPks,blocs,APDs,...
           ampalt,loadalt,apdalt,...
           smalllocs,biglocs,smallPks,bigPks,smallloads_t,bigloads_t,smallloads,bigloads] = alfn(Fluo,framerate,Pks,locs,before,after,tfilt,apd);
-smalllocs=[];
+% Function for calcualting alternan paramaters from single pixel trace 
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, please see 'licsence.txt' at ...
+
+% Last Updated -
+
+% Update Summary
+      
+      smalllocs=[];
 biglocs=[];
 smallPks=[];
 bigPks=[];
@@ -15,9 +25,6 @@ bigloads=[];
 Fluo=double(Fluo);
 Fluo=imcomplement(Fluo);
 Fluo=Fluo-min(Fluo);
-% figure,
-% plot(Fluo)
-% figure,
 Fluo=Fluo./max(Fluo);
 order=3;framesize=11;
 exposure = 1/framerate; %in milliseconds
@@ -29,13 +36,11 @@ bPks=zeros(length(Pks)-1,1);
 blocs=zeros(length(locs)-1,1);
 bPks(1)=0; blocs(1)=1;
 
-for i = 2: length(Pks)-2
-    i;
-    locs(i);
-    before;
-    after;
+for i = 1: length(Pks)
     length(Fluo);
+    if locs(i)-before > 0 && locs(i)+after < numel(Fluo)
     signal=Fluo((locs(i)-before):(locs(i)+after));
+    end
     [sigPks(i), siglocs(i)] = max(signal);
     before_sig=signal(1:siglocs(i));
     [bPks(i), blocs(i)]=min(before_sig);
@@ -53,7 +58,7 @@ Amplitude=sigPks-bPks;
 
 %Find the small and large beats
 s_count=0;b_count=0;
-for i = 1:length(Pks)-4
+for i = 1:length(Pks)-2
    if Peak(i+1) < Peak (i+2)
       s_count=s_count+1;
       smalllocs(s_count)=siglocs(i+1);
@@ -74,11 +79,11 @@ for i = 2:length(sigPks)-1
     %Alternan_Ratio(i)=1-(sigPks(i)/sigPks(i+1));
     sigPks;
     Alternan_Ratio(i)=(sigPks(i+1)-sigPks(i))/sigPks(i);
-    ampalt(i)=((sigPks(i+1))/sigPks(i))-1
+    ampalt(i)=((sigPks(i+1))/sigPks(i))-1;
     elseif sigPks(i) >= sigPks(i+1)
     %Alternan_Ratio(i)=1-(sigPks(i+1)/sigPks(i));
     Alternan_Ratio(i)=(sigPks(i)-sigPks(i+1))/sigPks(i+1);
-    ampalt(i)=(sigPks(i)/sigPks(i+1))-1
+    ampalt(i)=(sigPks(i)/sigPks(i+1))-1;
         else
             ampalt(i)=0;
     end

@@ -20,10 +20,9 @@ G=vx;
 S=vx;
 col=zeros(length(XYT),1);
 k1=1.0;k2=3.0;
-n=0;
+
 % Extract positions from XYT set and compute velocities
 L = length(XYT(:,1));
-XYT;
 for i=1:L
    X(i)=XYT(i,1);
    Y(i)=XYT(i,2);
@@ -43,7 +42,7 @@ for i=1:L
    good = find(~(bad1|bad2|bad3|bad4));
    G(i) = length(good);
 
-   if ~isempty(good),
+   if ~isempty(good)
       t=xytn(good,3);
       x=xytn(good,1);
       y=xytn(good,2);
@@ -57,24 +56,24 @@ for i=1:L
       Ty = sum(ty.*W)./sum(W);
       
       Tm=(Tx^2 + Ty^2);
-      if Tm>0,
+      if Tm>0
          % Check consistency of gradient magnitude
          t=(tx.^2 + ty.^2);
          S(i) = std(t)/mean(t);
 
          vx(i) = Tx/Tm;
          vy(i) = Ty/Tm;
-      end;
-   else,
+      end
+   else
       vx(i)=NaN;
       vy(i)=NaN;
-   end;
-       if ~isempty(good),
-        if mean(linres)<.85 & mean(res)<.25,
+   end
+       if ~isempty(good)
+        if mean(linres)<.85 && mean(res)<.25
          col(i)=1;
         end
        end
-end;
+end
 vx=vx/mspersamp;		% correct for sampling interval
 vy=vy/mspersamp;
 v=sqrt(vx.^2+vy.^2);		% velocity magnitude
@@ -98,13 +97,12 @@ bad=(bad1|bad2|bad3|bad4|bad5);
 % end;
 
 good = find(~bad);
-bad = find(bad);
 
 vgood=find(col);
 a=zeros(length(vgood),1);
-for i=1:length(vgood),
+for i=1:length(vgood)
   b=find(good==vgood(i));
-  if ~isempty(b),
+  if ~isempty(b)
    a(i)=b;
   end
 end

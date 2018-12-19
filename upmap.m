@@ -1,7 +1,16 @@
 function [map1] = upmap(images,mask)
-%% function for producing map of time at which maximum upstroke occurs
-% Chris O'Shea - Feb 2018
-% Based on - Zemlin et al 2008
+% function for producing map of time at which maximum upstroke occurs
+% (Based on - Zemlin et al 2008)
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
+
 order=3; framesize=11;      
 [rows cols] = size(images(:,:,1));
 rawmap=zeros(rows,cols);

@@ -1,6 +1,14 @@
-function [locs,minimas,q2locs,avgCL,numofpeaksoverall,newpeakheight]=Omseg2(signal,peakheight,peakdist,minpeakheight,minpeakdist,minboundary,segchoice,minmumofpeaks,numimages,div)
-%% Function for segmenting a signal based on CL according to user settings
-% Chris O'Shea 2018
+function [locs,minimas,q2locs,avgCL,numofpeaksoverall,newpeakheight]=Omseg2(signal,peakheight,peakdist,minpeakheight,minpeakdist,minboundary,segchoice,minmumofpeaks,numimages,div,before,after)
+% Function for segmenting a signal based on CL according to user settings
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
 
 %% Detect Peaks and minimums
 normsig=signal-min(signal);
@@ -8,113 +16,26 @@ normsig=normsig./max(normsig);
 insig=imcomplement(normsig);
 insig=insig-min(insig);
 insig=smooth(insig);
-normsig
 %find peaks
 maxfluo=max(signal);
 newpeakheight=maxfluo*peakheight;
+
+%make start up to before and end up to after zero so no peaks can be found here
+signal(1:before)=zeros(1,before);
+signal(end-after+1:end)=zeros(1,after);
+
 [pks, locs] = findpeaks(signal, 'MINPEAKHEIGHT',newpeakheight, 'MINPEAKDISTANCE', peakdist);
 remove1=0;
 removeend=0;
 
-%% find minimas
-alocs=[];blocs=[];
-bisg=[];asig=[];
-minimas=zeros(length(locs),2);
-
-
-if isempty (locs) == 0
-bsig=insig(1:locs(1));
-else
-    locs=[1 2 3 4 5 6 7 8];
-    bsig=[1 2 3 4 5 6];
-end
-if numel(bsig) < 3
-    bsig = [1 2 3 4 5 6 7];
-end
-bsig
-[ipks, blocs] = findpeaks(bsig, 'MINPEAKHEIGHT',0.5*peakheight*max(insig), 'MINPEAKDISTANCE', 1);
-if isempty(blocs) ~= 1 
-minimas(1,1)=blocs(end);
-if numel(locs) > 1
-asig=insig(locs(1):locs(2));
-else
-    asig=[1 2 3 4 5 6 7];
-end
-[ipks, alocs] = findpeaks(asig, 'MINPEAKHEIGHT',0.5*peakheight*max(insig), 'MINPEAKDISTANCE', 1);
-if isempty(alocs) == 1
-   [ipks,alocs]=max(asig);
-end
-minimas(1,2)=alocs(1)+locs(1);
-loopstart=2
-elseif isempty(blocs) == 1  %if no minimum before first peak, then ignore
-    remove1=1;
-end
-
-for i=2:length(locs)-1
-alocs=[];blocs=[];
-bsig=insig(locs(i-1):locs(i));
-if length(bsig) > 2
-[ipks, blocs] = findpeaks(bsig, 'MINPEAKHEIGHT',0.5*peakheight*max(insig), 'MINPEAKDISTANCE', 2);
-end
-if isempty(blocs) == 1
-    isempty(asig) == 0
-    [ipks, blocs]=max(asig)
-else
-    asig=[1:20]
-    [ipks, blocs]=max(asig)
-end
-if isempty(blocs) == 1
-    blocs = 10
-end
-minimas(i,1)=blocs(end)+locs(i-1);
-asig=insig(locs(i):locs(i+1));
-if length(asig) > 2
-[ipks, alocs] = findpeaks(asig, 'MINPEAKHEIGHT',0.5*peakheight*max(insig), 'MINPEAKDISTANCE', 2);
-end
-if isempty(alocs) == 1
-    [ipks, alocs]=max(asig)
-end
-minimas(i,2)=alocs(1)+locs(i);
-end    
-
-
-alocs=[];blocs=[];
-if numel(locs) > 1
-bsig=insig(locs(numel(locs)-1):locs(numel(locs)));
-else
-    bsig=[1 2 3 4 5 6 7]
-end
-if numel(asig) > 2
-[ipks, blocs] = findpeaks(bsig, 'MINPEAKHEIGHT',0.001*max(insig), 'MINPEAKDISTANCE', 2);
-end
-asig=insig(locs(numel(locs)):end);
-if numel(asig) > 3
-[ipks, alocs] = findpeaks(asig, 'MINPEAKHEIGHT',0.001*max(insig), 'MINPEAKDISTANCE', 2);
-end
-if isempty(blocs) ~= 1 && isempty(alocs) ~= 1
-minimas(numel(locs),1)=blocs(1)+locs(numel(locs)-1);
-minimas(numel(locs),2)=alocs(1)+locs(numel(locs));
-else
-    removeend=1
-end
-
-if remove1==1
-   locs=locs(2:end)
-   minimas=minimas(2:end,:) 
-end
-
-if removeend==1
-   locs=locs(1:end-1)
-   minimas=minimas(1:end-1,:) 
-end
-
+minimas=[];
 %% Split up 'averages'
 CL=zeros((length(locs)),3);
 CL(:,1)=locs(:);
 CLdiff=zeros(1,(length(CL)-1));
 %Calculate CLs
 if length(locs) >= 2
-CL(1,2)=locs(2)-locs(1) %first peak as no refrence before, so use next peak
+CL(1,2)=locs(2)-locs(1); %first peak as no refrence before, so use next peak
 end
 for i=2:(length(locs))
     CL(i,2)=locs(i)-locs(i-1);
@@ -125,7 +46,7 @@ for i=2:(length(locs)-2)
     if abs(CLdiff(i)) > minboundary
         CL(i,3)=1;
         if CL(i-1,3) == 1
-            CL(i,3) = 0
+            CL(i,3) = 0;
         end
     end
 end
@@ -134,7 +55,7 @@ end
 q1=[];k=1;j=0; q2=[]; q2locs=[];
 if isempty(locs) == 1 %no peaks
     h=errordlg('No action potential detected')
-    waitfor(h)
+    waitfor(h);
 end
 
 if length(locs) > 1
@@ -250,7 +171,7 @@ if segchoice == 2 || segchoice == 3
         end
         q2locs= C(any(C,2),:);
      end
-     
+     cld=zeros(length(q2locs(:,1)),length(q2locs(1,:))-1)
      %update avgcl for subseq
      for i=1:length(q2locs(:,1));
         if any((q2locs(i,:))) == 1

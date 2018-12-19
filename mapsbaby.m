@@ -1,25 +1,35 @@
-% function for taking a single beat image file and making apd/cad maps
+
 function [map,meann,alll,onedev,vari,SE] = mapsbaby(startopt,framerate,t,maskedimage,imagestack,avbeat,outs,cmin,cmax,tfilt,before,apdblopt,apdblnum,medianfilter)
-[rows cols] = size(imagestack(:,:,1))
-counter = 0;
+% function for taking a single beat image file and making apd/cad maps
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
+
+
+
+[rows, cols] = size(imagestack(:,:,1));
 
  if tfilt == 3
-            d=designfilt('lowpassiir', 'PassbandFrequency', 100,'StopbandFrequency', 350, 'PassbandRipple', 1, 'StopbandAttenuation', 60, 'SampleRate', 1000);
-            end
-tic;
-maskedimage;
+    d=designfilt('lowpassiir', 'PassbandFrequency', 100,'StopbandFrequency', 350, 'PassbandRipple', 1, 'StopbandAttenuation', 60, 'SampleRate', 1000);
+ end
+
 baseline=zeros(size(maskedimage));
 premap = zeros(rows,cols);
 singalall=fluo_map(framerate,maskedimage,imagestack,tfilt,avbeat);
 singalall=(singalall-min(min(singalall)))/(max(max(singalall))-min(min(singalall)));
 exposure = 1/framerate; %in milliseconds
 before=round(before/exposure);
-count = 0;
+
 order =3;
 framesize =11;
 for row = 1:rows
     for col = 1:cols
-        dpol=[];
         if maskedimage(row,col) ~= 0
         try
             APD = t/100;
@@ -58,9 +68,7 @@ for row = 1:rows
             [maxval, maxInd] = max(signalav(1:(upstroke+round(25/exposure)))); %peak assotiead with first upstroke shortley after maxupstroke (set here to 20ms)
             
             % 3, Depol point (sdstart) (should be changed to max d2f/dt2???) 
-            for i =1:upstroke
-                dpol(i) = signalav(i);
-            end
+            dpol=signalav(1:upstroke);
             %New dpol find code (!! Do comparsion of these for thesis!)
             ds=diff(dpol);
             d2s=diff(ds);
@@ -94,13 +102,13 @@ for row = 1:rows
 %             ind1=ind1(ind1>sdstart);
 %             end
             if isempty(ind1) == 1
-                ind1 = 1
+                ind1 = 1;
             end
             ind1=ind1(1);
             ind2=ind1-1;
             if ind2 == 0
-                ind1 = 2
-                ind2 = 1
+                ind1 = 2;
+                ind2 = 1;
             end
             dlowVal=signalav(ind2);
             dhighVal=signalav(ind1);
@@ -108,7 +116,7 @@ for row = 1:rows
 
             % Determines points for line equations
             if isempty(dhighVal) == 0 && isempty(dlowVal) == 0
-            midi;
+
             dy1 = dhighVal;
             dy2 = dlowVal;
 
@@ -152,7 +160,6 @@ for row = 1:rows
             
             if apdblopt == 3
             baseline(row,col) = min(signalav(1:upstroke));
-            baseline(row,col);
             end
             
                
@@ -269,36 +276,15 @@ if outs == 8
     alll=deleteoutliers(alll);
     end
 end
-sigcount=0
-s=[0.25,0.5,0.75,0.1];
-if outs == 9 || outs == 10 || outs == 11 || outs == 12
-    siglevel=s(outs-8);
-    alll=[];
-    for r=1:rows
-        for c=1:cols
-            if singalall(r,c) > siglevel && isnan(premap(r,c)) ~= 1 && isinf(premap(r,c)) ~= 1 && premap(r,c) > 0 
-                sigcount=sigcount+1;
-                alll(sigcount)=premap(r,c)*exposure;
-            else premap(r,c) = 0;
-            end
-        end
-    end
-        alll=deleteoutliers(alll);
-end
 onedev=std(alll);
 SE=onedev/sqrt(numel(alll));
 vari=var(alll);
 meann = mean(alll);
-% 
-% disp(['APD',num2str(t)]);
-% disp(['max: ', num2str(maxxxx),'ms'])
-% disp(['min: ', num2str(minnnn),'ms']);
-% disp(['mean :' , num2str(meannnn),'ms']);
-% disp(' ');
+
 
 premap=premap*exposure;
 if exist('medianfilter') == 0
-    medianfilter=1
+    medianfilter=1;
 end
 if medianfilter == 1
 map=medfilt2(premap);

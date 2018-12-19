@@ -1,5 +1,22 @@
-% function for taking a single beat image file and making apd/cad maps
+
 function [map,meann,alll,onedev,vari,SE] = ttpnew(t1,t2,framerate,t,maskedimage,imagestack,avbeat,outs,cmin,cmax,tfilt,before,apdblopt,apdblnum)
+% Function for calculating ttp
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
+
+
+%Check Inputted fit paramaters make sense
+if t1 < 0 || t1 > 100 || t2 < 0 || t2 > 100
+    errordlg('Please check inputted ttp start and end values (both should be between 0 and 100)')
+end
+
 [rows cols] = size(imagestack(:,:,1))
 counter = 0;
 
@@ -154,7 +171,7 @@ for i=1:rows
         end
     end
 end
-map=map*exposure
+map=map*exposure;
 
 
 %% Notes

@@ -1,4 +1,16 @@
 function varargout = conduction(varargin)
+
+% Function for running conduction GUI. 
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, please see 'licsence.txt' at ...
+
+% Last Updated -
+
+% Update Summary
+
 % CONDUCTION MATLAB code for conduction.fig
 %      CONDUCTION, by itself, creates a new CONDUCTION or raises the existing
 %      singleton*.
@@ -58,12 +70,15 @@ h = findobj('Tag','ElectroMap');
 g1data = guidata(h);
 axes(handles.actmap);
 wb=waitbar(0.5,'Transfering Activation Map');
-[handles.map,~,~,handles.act_t,~,~,~,~,~,~,handles.vout,handles.quivers_Xout,handles.quivers_Yout,handles.quivers_vxout,handles.quivers_vyout,~,~,~]...
-    =cvmap(str2num(get(g1data.pixelsize,'String')),str2num(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,1,str2num(get(g1data.minvel,'String')),str2num(get(g1data.maxvel,'String')),get(g1data.velalgo,'Value'),...
-    str2num(get(g1data.MINt,'String')),str2num(get(g1data.MAXt,'String')),str2num(get(g1data.winsize,'String')),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.wint,'String')),1,str2num(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2num(get(g1data.splineN,'String'))); 
 
 
-
+handles.map=g1data.actmap;
+handles.act_t=g1data.act_t;
+handles.vout=g1data.vout;
+handles.quivers_Xout=g1data.quivers_Xout;
+handles.quivers_Yout=g1data.quivers_Yout;
+handles.quivers_vxout=g1data.quivers_vxout;
+handles.quivers_vyout=g1data.quivers_vyout;
 
 delete(wb)
 
@@ -79,8 +94,8 @@ if get(g1data.isoopt,'Value') == 1
 mini=0;
 maxi=max(max(map));
 elseif get(g1data.isoopt,'Value') == 2
-mini=str2num(get(g1data.isomin,'String'));
-maxi=str2num(get(g1data.isomax,'String'));
+mini=str2double(get(g1data.isomin,'String'));
+maxi=str2double(get(g1data.isomax,'String'));
 end
 imshow(map, [0 maxi], 'InitialMagnification', 800,'colormap',jetcolormap),
 caxis([mini maxi]);
@@ -127,8 +142,8 @@ h = findobj('Tag','ElectroMap');
 g1data = guidata(h);
 axes(handles.actmap);
 [handles.map,~,~,handles.act_t,~,~,~,~,~,~,handles.vout,handles.quivers_Xout,handles.quivers_Yout,handles.quivers_vxout,handles.quivers_vyout,~,~,~]...
-=cvmap(str2num(get(g1data.pixelsize,'String')),str2num(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,1,str2num(get(g1data.minvel,'String')),str2num(get(g1data.maxvel,'String')),get(handles.actopt,'Value'),...
- str2num(get(g1data.MINt,'String')),str2num(get(g1data.MAXt,'String')),str2num(get(g1data.winsize,'String')),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.wint,'String')),1,str2num(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2num(get(g1data.splineN,'String'))); 
+=cvmap(str2double(get(g1data.pixelsize,'String')),str2double(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,get(handles.localout,'Value'),str2double(get(g1data.minvel,'String')),str2double(get(g1data.maxvel,'String')),get(handles.actopt,'Value'),...
+0,1000,str2double(get(g1data.winsize,'String')),str2double(get(g1data.beforeGUI,'String')),str2double(get(g1data.wint,'String')),1,str2double(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2double(get(g1data.splineN,'String'))); 
 
 
 
@@ -140,8 +155,8 @@ if get(g1data.isoopt,'Value') == 1
 mini=0;
 maxi=max(max(map));
 elseif get(g1data.isoopt,'Value') == 2
-mini=str2num(get(g1data.isomin,'String'));
-maxi=str2num(get(g1data.isomax,'String'));
+mini=str2double(get(g1data.isomin,'String'));
+maxi=str2double(get(g1data.isomax,'String'));
 end
 imshow(map, [0 maxi], 'InitialMagnification', 800,'colormap',jetcolormap),
 caxis([mini maxi]);
@@ -197,10 +212,8 @@ set(handles.actcurve,'Value',0);
 set(handles.single,'Value',0);
 
 axes(handles.actmap);
-[handles.map,~,~,handles.act_t,~,~,~,~,~,~,handles.vout,handles.quivers_Xout,handles.quivers_Yout,handles.quivers_vxout,handles.quivers_vyout,~,~,~]...
-    =cvmap(str2num(get(g1data.pixelsize,'String')),str2num(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,get(handles.localout,'Value'),str2num(get(g1data.minvel,'String')),str2num(get(g1data.maxvel,'String')),get(handles.actopt,'Value'),...
-     str2num(get(g1data.MINt,'String')),str2num(get(g1data.MAXt,'String')),str2num(get(g1data.winsize,'String')),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.wint,'String')),1,str2num(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2num(get(g1data.splineN,'String'))); 
 
+map=handles.map;
 set(handles.localmean,'String',[num2str(mean(handles.vout)),'cm/s'])
 set(handles.localmin,'String',[num2str(min(handles.vout)),'cm/s'])
 set(handles.localmax,'String',[num2str(max(handles.vout)),'cm/s'])
@@ -215,8 +228,8 @@ if get(g1data.isoopt,'Value') == 1
 mini=0;
 maxi=max(max(map));
 elseif get(g1data.isoopt,'Value') == 2
-mini=str2num(get(g1data.isomin,'String'));
-maxi=str2num(get(g1data.isomax,'String'));
+mini=str2double(get(g1data.isomin,'String'));
+maxi=str2double(get(g1data.isomax,'String'));
 end
 imshow(map, [0 maxi], 'InitialMagnification', 800,'colormap',jetcolormap),
 caxis([mini maxi]);
@@ -225,6 +238,9 @@ hold on
 quiver(handles.quivers_Xout,handles.quivers_Yout,scal*handles.quivers_vxout,scal*handles.quivers_vyout,0,'k')
 hold off
 %quiversc=[vx,vy,v,Xpos,Ypos,angle]
+size(handles.quivers_vxout)
+size(handles.quivers_vyout)
+size(handles.vout)
 quiverv=[handles.quivers_vxout, handles.quivers_vyout,handles.vout,handles.quivers_Xout,handles.quivers_Yout];
 for i =1:length(handles.quivers_vxout)
     vangle(i)=(atan(quiverv(i,1)/quiverv(i,2))*(180/pi));
@@ -262,7 +278,7 @@ end
 axes(handles.axes2)
 cla
 if get(handles.localvelopt,'Value') == 1 
-histogram(handles.vout,str2num(get(g1data.binnumber,'String')));
+histogram(handles.vout,str2double(get(g1data.binnumber,'String')));
 hold on
 axis tight
 title('Velocity Distribution')
@@ -286,7 +302,7 @@ if goto180 == 1
     plot([binsize/2:binsize:180-binsize/2],hva180)
     % for .csv output
     handles.angless=binsize/2:binsize:180-binsize/2;
-    handles.hvals=hval180;
+    handles.hvals=hva180;
 title('Angular Distribution')
 xlabel('Angle of Velocity Vector')
 ylabel('Number of Pixels')
@@ -360,8 +376,8 @@ xx=get(ax,'Xlim');
 yy=get(ax,'Ylim');
 hold on
 
-actmax=str2num(get(handles.actmax,'String'));
-actmin=str2num(get(handles.actmin,'String'));
+actmax=str2double(get(handles.actmax,'String'));
+actmin=str2double(get(handles.actmin,'String'));
 
 Imax = find(tissueact > actmax);
 Imin = find(tissueact > actmin);
@@ -537,12 +553,10 @@ if (handles.curX > min(xLimits) && handles.curX < max(xLimits) && handles.curY >
     if get(handles.single,'value') == 1
         axes(handles.actmap)
 
-veldistance=str2num(get(handles.veldistance,'String'));
-veldistancepix=round(veldistance*10000/(str2num(get(g1data.pixelsize,'String'))));
+veldistance=str2double(get(handles.veldistance,'String'));
+veldistancepix=round(veldistance*10000/(str2double(get(g1data.pixelsize,'String'))));
 
-[map,act_x,act_y,act_t,quivers_X,quivers_Y,quivers_vx,quivers_vy,CV,~,vout,quivers_Xout,quivers_Yout,quivers_vxout,quivers_vyout, onedevcv,~,~]...
-= cvmap(str2num(get(g1data.pixelsize,'String')),str2num(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,get(g1data.velout,'Value'),str2num(get(g1data.minvel,'String')),str2num(get(g1data.maxvel,'String')),get(handles.actopt,'Value'),...
- str2num(get(g1data.MINt,'String')),str2num(get(g1data.MAXt,'String')),str2num(get(g1data.winsize,'String')),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.wint,'String')),1,str2num(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2num(get(g1data.splineN,'String')));
+map=handles.map;
 m=min(map(map>0));
 [rows cols] = size(map);
 count=0;
@@ -565,8 +579,8 @@ if isochoice == 1
 mini=0;
 maxi=max(max(map));
 elseif isochoice == 2
-mini=str2num(get(g1data.isomin,'String'));
-maxi=str2num(get(g1data.isomax,'String'));
+mini=str2double(get(g1data.isomin,'String'));
+maxi=str2double(get(g1data.isomax,'String'));
 end
 
 imshow(map, [0 maxi], 'InitialMagnification', 800),
@@ -622,7 +636,7 @@ for i =1:numel(xunit)
         mat(count,1)=p1(1)-p2(1); 
         mat(count,2)=p1(2)-p2(2);
         mat(count,3)=tim; %time diffrence 
-        mat(count,4)=(dc*0.0001*(str2num(get(g1data.pixelsize,'String'))))/tim*1000; %speed in cm/s
+        mat(count,4)=(dc*0.0001*(str2double(get(g1data.pixelsize,'String'))))/tim*1000; %speed in cm/s
         mat(count,5)=th(i)*(180/pi);
         mat(count,6)=dc; %pixel distance
         xco=xcn;
@@ -636,7 +650,7 @@ for i =1:numel(xunit)
         mat(count,1)=p1(1)-p2(1); 
         mat(count,2)=p1(2)-p2(2);
         mat(count,3)=tim; %time diffrence 
-        mat(count,4)=(dc*0.0001*(str2num(get(g1data.pixelsize,'String'))))/tim*1000; %speed in cm/s
+        mat(count,4)=(dc*0.0001*(str2double(get(g1data.pixelsize,'String'))))/tim*1000; %speed in cm/s
         mat(count,5)=th(i)*(180/pi);
         mat(count,6)=dc; %pixel distance
         end
@@ -647,7 +661,7 @@ mat=unique(mat,'rows');%get rid of repeat points
 outs=get(handles.singleout,'Value');
 newcount=1;
 if isempty(mat) == 1
-    errordlg('No postive conduction vecotrs found at this distance. Consider changing distance or starting point')
+    errordlg('No postive conduction vectorrs found at this distance. Consider changing distance or starting point')
 end
 if outs == 2
     singlevels=deleteoutliers(mat(:,4));
@@ -758,9 +772,7 @@ if (handles.curX > min(xLimits) && handles.curX < max(xLimits) && handles.curY >
            elseif isempty(handles.point_A) == 0 && isempty(handles.point_B) == 1
                handles.point_B=[round(handles.curX), round(handles.curY)]
                               axes(handles.actmap);
-[map,act_x,act_y,act_t,quivers_X,quivers_Y,quivers_vx,quivers_vy,CV,~,vout,quivers_Xout,quivers_Yout,quivers_vxout,quivers_vyout, onedevcv,~,~]...
-= cvmap(str2num(get(g1data.pixelsize,'String')),str2num(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,get(g1data.velout,'Value'),str2num(get(g1data.minvel,'String')),str2num(get(g1data.maxvel,'String')),get(handles.actopt,'Value'),...
- str2num(get(g1data.MINt,'String')),str2num(get(g1data.MAXt,'String')),str2num(get(g1data.winsize,'String')),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.wint,'String')),1,str2num(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2num(get(g1data.splineN,'String')));
+map=handles.map;
 m=min(map(map>0));
 [rows cols] = size(map);
 count=0;
@@ -781,8 +793,8 @@ if isochoice == 1
 mini=0;
 maxi=max(max(map));
 elseif isochoice == 2
-mini=str2num(get(g1data.isomin,'String'));
-maxi=str2num(get(g1data.isomax,'String'));
+mini=str2double(get(g1data.isomin,'String'));
+maxi=str2double(get(g1data.isomax,'String'));
 end
 
 imshow(map, [0 maxi], 'InitialMagnification', 800),
@@ -802,7 +814,7 @@ hold on
 
 time_A=map(handles.point_A(2),handles.point_A(1));
 time_B=map(handles.point_B(2),handles.point_B(1)); %times in ms
-dist=sqrt((handles.point_A(2)-handles.point_B(2))^2+(handles.point_A(1)-handles.point_B(1))^2)*str2num(get(g1data.pixelsize,'String')) %distance in um
+dist=sqrt((handles.point_A(2)-handles.point_B(2))^2+(handles.point_A(1)-handles.point_B(1))^2)*str2double(get(g1data.pixelsize,'String')) %distance in um
 speed=dist*0.0001/(time_B-time_A)*1000; %speed in cm/s
 speed=sqrt(speed*speed)
 time=sqrt((time_B-time_A)^2)
@@ -926,6 +938,10 @@ function localout_Callback(hObject, eventdata, handles)
 handles = guidata(hObject);
 h = findobj('Tag','ElectroMap');
 g1data = guidata(h);
+[handles.map,~,~,handles.act_t,~,~,~,~,~,~,handles.vout,handles.quivers_Xout,handles.quivers_Yout,handles.quivers_vxout,handles.quivers_vyout,~,~,~]...
+=cvmap(str2double(get(g1data.pixelsize,'String')),str2double(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,get(handles.localout,'Value'),str2double(get(g1data.minvel,'String')),str2double(get(g1data.maxvel,'String')),get(handles.actopt,'Value'),...
+0,1000,str2double(get(g1data.winsize,'String')),str2double(get(g1data.beforeGUI,'String')),str2double(get(g1data.wint,'String')),1,str2double(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2double(get(g1data.splineN,'String'))); 
+guidata(hObject, handles);
 local_Callback(hObject, eventdata, handles);
 guidata(hObject, handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns localout contents as cell array
@@ -985,9 +1001,7 @@ function clearAB_Callback(hObject, eventdata, handles)
 handles = guidata(hObject);
 h = findobj('Tag','ElectroMap');
 g1data = guidata(h);
-[map,act_x,act_y,act_t,quivers_X,quivers_Y,quivers_vx,quivers_vy,CV,~,vout,quivers_Xout,quivers_Yout,quivers_vxout,quivers_vyout, onedevcv,~,~]...
-= cvmap(str2num(get(g1data.pixelsize,'String')),str2num(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,get(g1data.velout,'Value'),str2num(get(g1data.minvel,'String')),str2num(get(g1data.maxvel,'String')),get(handles.actopt,'Value'),...
- str2num(get(g1data.MINt,'String')),str2num(get(g1data.MAXt,'String')),str2num(get(g1data.winsize,'String')),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.wint,'String')),1,str2num(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2num(get(g1data.splineN,'String')));
+map=handles.map;
 axes(handles.actmap)
                
 isochoice=get(g1data.isoopt,'Value');
@@ -995,8 +1009,8 @@ if isochoice == 1
 mini=0;
 maxi=max(max(map));
 elseif isochoice == 2
-mini=str2num(get(g1data.isomin,'String'));
-maxi=str2num(get(g1data.isomax,'String'));
+mini=str2double(get(g1data.isomin,'String'));
+maxi=str2double(get(g1data.isomax,'String'));
 end
 
 imshow(map, [0 maxi], 'InitialMagnification', 800),

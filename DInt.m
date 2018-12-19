@@ -1,4 +1,15 @@
 function [map,meann,alll] = DInt(framerate,maskedimage,imagestack,outs,cmin,cmax,tfilt,before,after,peakdist,frame_1,frame_last,t);
+% Function for creating diastolic interval map from an image stack. 
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, please see 'licsence.txt' at ...
+
+% Last Updated -
+
+% Update Summary
+
 
 [rows cols num_images] = size(imagestack(:,:,:));
 counter = 0;
@@ -28,10 +39,8 @@ sdstart=[]; Tim = [];
 if mask(row,col) ~= 0  
 %try
 %find pixel signal
-for i=1:num_images
-    sig(i)=imagestack(row,col,i);
-    sig(i)=imcomplement(sig(i));
-end
+    sig=imcomplement((squeeze(imagestack(row,col,:))));
+
 
 sig=double(sig);
 sig=sig-min(sig);
@@ -57,7 +66,6 @@ else finish = numel(locs);
 end
 
 %% make double peak average
-pks;
 for i = start
     tstart=locs(i)-before;
     tend=locs(i+1)+after;
@@ -102,7 +110,7 @@ peak=overalldoublepeak;
             
             minInd = find(abs(checkSignal-APD)==min(abs(checkSignal-APD)));
             if minInd == numel(checkSignal)
-                minInd=minInd - 1
+                minInd=minInd - 1;
             end
             % Locates points above and below APD90
             if(checkSignal(minInd) > APD)

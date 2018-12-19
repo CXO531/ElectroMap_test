@@ -1,6 +1,6 @@
 function [preimages,images,averages,mask] = OMimprocess(fname,im,rect,num_images,cropchoice,mask,sfilt,sfiltsize,inversion,tfilt,removef,camopt,sfiltsigma)
 %funtion for reading in and processimg all images in the tif stack/ rhs
-
+[rows cols] = size(im);
 [token,remain] = strtok(fname,'.');
 fileisrsh=0;
 if strcmp(remain, '.mat') == 1
@@ -9,7 +9,15 @@ if strcmp(remain, '.mat') == 1
     imvar=S.name;
     X=load(fname);
     v=struct2cell(X);
-    prematimages=cell2mat(v);
+    images=cell2mat(v);
+    images=double(images);
+    images=images-min(min(images));
+    images=images./max(max(images));
+    figure,
+    imshow(images(:,:,1),[])
+    images=images*((2^16)-1);
+    images=uint16(images);
+    dbs=16;
 end
 
 %% Load images and store data in array
@@ -33,7 +41,11 @@ warning('off','MATLAB:imagesci:tiffmexutils:libtiffWarning')
 wbfactor=floor(num_images/6);
 wbcount=0;
 
-if fileisrsh == 0;
+
+
+if fileisrsh == 0
+    images=zeros(rows,cols,num_images);
+preimages=zeros(rows,cols,num_images);
     TifLink = Tiff(fname, 'r');
 for j  = 1:num_images;  
     TifLink.setDirectory(j);
@@ -44,7 +56,6 @@ for j  = 1:num_images;
     if inversion == 0
        A=imcomplement(A);
     end
-    images(:,:,j)=A;
     preimages(:,:,j)=A;
     A = imfilter(A, h);
     A = uint16(A);
@@ -63,7 +74,7 @@ end
 
 if fileisrsh == 2;
 for j  = 1:num_images;
-    A=prematimages(:,:,j)*1000;
+    A=images(:,:,j);
     if cropchoice == 1
     A = imcrop(A, rect);
     end
@@ -73,8 +84,7 @@ for j  = 1:num_images;
     end
     preimages(:,:,j)=(A);
     A = imfilter(A, h);
-    mask=double(mask);
-    class(A);
+    mask=uint16(mask);
     B = A.*mask;
     images(:,:,j) = B;
     averages(:,j) = mean2(B);
@@ -113,8 +123,8 @@ if removef == 1
     % find pulse frames
     for i=1:length(olocs)
         for k=-before:after
-            pframe=[olocs(i)+k]
-            pcheck=ismember(pframes,pframe)
+            pframe=[olocs(i)+k];
+            pcheck=ismember(pframes,pframe);
             if any(pcheck) == 0
                 pfcount=pfcount+1;
                 pframes(pfcount)=pframe;
@@ -125,6 +135,8 @@ if removef == 1
     
     %remove pulse frames
     for j=1:length(pframes)
+        numel(pframes)
+        j
         C=images(:,:,pframes(j)-1);
         images(:,:,pframes(j))=C;
     end
@@ -143,6 +155,9 @@ d=designfilt('lowpassiir', 'PassbandFrequency', 100,'StopbandFrequency', 350, 'P
 averages=filtfilt(d,averages);
 end
                                                         
-if tfilt == 2
+if tfilt == 2 || tfilt == 1
 averages = sgolayfilt(averages, 3,11);
 end
+
+
+

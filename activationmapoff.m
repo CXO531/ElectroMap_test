@@ -1,5 +1,15 @@
 function [actmap,aoff]=activationmapoff(pix,framerate,images,mask,velalgo,before,tfilt,usespline,splineN,repolap,inoff);
-%% function for making activation map without cv
+% Function for creating activation map from an image stack.
+% This version also outputs the offset  
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, please see 'licsence.txt' at ...
+
+% Last Updated -
+
+% Update Summary
 
 exposure = 1/framerate; %as input in GUI is in kHz, so 1=1000Hz which also means exposure of 1ms
 pix=pix/10000; %input in micrometers, this converts it to cms

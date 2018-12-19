@@ -1,6 +1,15 @@
 function [num_images,rect,mask,im,I,boundaries,camopt,frame1,fluoim,rois] = OMimload(fname,cropchoice,quinnieopt,threshop,threshman,rect,inversion,camopt,fluo_opt,roinum,roisum)
 % Function for taking raw image file and applying thersholding, final
 % output - regradless of input, will be uint16 mask. 
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
 id='MATLAB:imagesci:tifftagsread:expectedTagDataFormat';
 warning('off',id)
 id='MATLAB:imagesci:tiffmexutils:libtiffWarning';
@@ -15,13 +24,24 @@ if strcmp(remain, '.mat') == 1 %file is .mat file
     imvar=S.name;
     X=load(fname);
     v=struct2cell(X);
+    sv = size(v,1);
+    if sv > 1
+       errordlg('Multiple variables found in .MAT file!. Please edit file to contain only images variable')
+    end
     images=cell2mat(v);
+    images=double(images);
+    images=images-min(min(images));
+    images=images./max(max(images));
+    figure,
+    imshow(images(:,:,1),[])
+    images=images*((2^16)-1);
+    images=uint16(images);
+    dbs=16;
 end
 
 %% Get info and normlaise to help thersholding
 wb = waitbar(0.5,'Loading Images');
 if fileisrsh == 0
-    fname
 info = imfinfo(fname);
 %% work out file BitDepth
 dbs=info.BitDepth;
@@ -34,7 +54,7 @@ if num_images > 2000 %For speed, only do raw sig level from first 2000 frames - 
 else
     fluoims = num_images;
 end
-for j  = 1:fluoims;  
+for j  = 1:fluoims
     TifLink.setDirectory(j);
     A=TifLink.read();
     rawimages(:,:,j)=A;
@@ -52,9 +72,9 @@ if fileisrsh == 2 %.mat
 num_images=size(images,3);
 frame1=images(:,:,1);
 if num_images > 2000
-    fluoims = 2000
+    fluoims = 2000;
 else
-    fluoims = num_images
+    fluoims = num_images;
 end
   for j  = 1:fluoims;  
     rawimages(:,:,j)=images(:,:,j);
@@ -76,7 +96,7 @@ end
 end
 
 
-[rows, cols] = size(im);
+
 imvec=reshape(im,1,(size(im,1)*size(im,2)));
 i3=im-min(imvec);
 i3=double(i3);
@@ -108,7 +128,7 @@ im = imcrop(im, rect);
 fluoim=imcrop(fluoim,rect);
 frame1=imcrop(frame1,rect);
 end
-rois=zeros(size(im))
+rois=zeros(size(im));
 % manual roi crop
 if quinnieopt == 1
 figure,
@@ -138,7 +158,7 @@ B1=B1{1};
  close(polyfig);
  rois(:,:,1)=BWpoly1;
  rois(:,:,2)=BWpoly2;
- BWpoly=BWpoly2+BWpoly1
+ BWpoly=BWpoly2+BWpoly1;
 if roinum == 3
     figure,
  imshow(i3, [],'InitialMagnification', 800) 
@@ -155,13 +175,13 @@ if roinum == 3
     rois(:,:,3)=BWpoly3;
  polyfig=gcf;
  close(polyfig);
- BWpoly=(BWpoly)+BWpoly3
+ BWpoly=(BWpoly)+BWpoly3;
 end
 end
 if roisum == 0
-    BWpoly(BWpoly>1)=0
+    BWpoly(BWpoly>1)=0;
 else
-    BWpoly(BWpoly>1)=1
+    BWpoly(BWpoly>1)=1;
 end
 close(roifigure)
 end
@@ -177,31 +197,23 @@ if threshop == 2 %manual threshold (percent change from auto)
 end
 
 mask=[];
-if dbs == 16
+if dbs == 32
+mask = uint32(im>=threshold);    
+elseif dbs == 16
 mask = uint16(im>=threshold);
 elseif dbs == 8
 mask = uint8(im>=threshold);
-elseif  dbs == 0
-mask=double(im>=threshold)
+elseif dbs == 0
+mask=double(im>=threshold);
 end
 % end
 
 if quinnieopt == 1 %apply custom ROI
     BWpoly=uint16(BWpoly);
-    mask=mask.*BWpoly
-end
-
-if fluo_opt == 2
-    mask=double(mask);
-end
-
-
-if fileisrsh == 2
-   mask=double(mask);
+    mask=mask.*BWpoly;
 end
 
 close(wb)
-dbs
 I=im.*mask;
 [boundaries] = bwboundaries(mask);
 

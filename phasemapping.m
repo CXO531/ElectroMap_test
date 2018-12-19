@@ -1,4 +1,15 @@
 function varargout = phasemapping(varargin)
+% Main function for running phase mapping GUI
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
+
 % PHASEMAPPING MATLAB code for phasemapping.fig
 %      PHASEMAPPING, by itself, creates a new PHASEMAPPING or raises the existing
 %      singleton*.
@@ -53,7 +64,7 @@ function phasemapping_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to phasemapping (see VARARGIN)
 handles.output = hObject;
 h = findobj('Tag','ElectroMap');
-
+wb=waitbar(0.5, 'Performing Phase Calculations');
 %% get data from ElectroMap
 g1data = guidata(h);
 handles.row=[];
@@ -61,32 +72,26 @@ handles.col=[];
 handles.pointcount=0;
 handles.images=g1data.images;
 handles.mask=g1data.mask;
-handles.cm=['b','r','g','m','y']
+handles.cm=['b','r','g','m','y'];
 handles.exposure=1/str2num(get(g1data.framerate,'String'));
 [handles.rows, handles.cols, handles.num]= size(handles.images(:,:,:));
-handles.phases=zeros(handles.rows,handles.cols,handles.num);
 section_choice=get(g1data.listbox2,'Value');
 handles.CL=round(g1data.avgCL(2,section_choice),-1); 
-%handles.CL=300;
 B = 1/handles.CL*ones(handles.CL,1);
 
 %% compute phase values using hilbert transform 
 for row = 1:handles.rows
     for col =1:handles.cols
-        for i=1:handles.num
-            pixelsignal(i)=handles.images(row,col,i); % get pixel signal
-        end
+        pixelsignal=handles.images(row,col,1:handles.num); % get pixel signal
         out = filter(B,1,pixelsignal);    
         pixelsignal=double(pixelsignal);
         shiftedsignal=pixelsignal-out; %average filter signal 
         shiftedpixelsignal=shiftedsignal(handles.CL:length(shiftedsignal)); %remove first and last sections < CL used for shift
         hsig=hilbert(shiftedpixelsignal); % perform hilbert transfrom  
-        for i =1:(handles.num-handles.CL*2) 
-            handles.phases(row,col,i)=-1*angle(hsig(i)); %find phase angle for each pixel in each frame
-            handles.freq(row,col,i)=gradient((-1*angle(hsig(i))));
-            handles.xs(row,col,i)=real(hsig(i));
-            handles.ys(row,col,i)=imag(hsig(i)); % find components of phase angle
-        end
+        handles.phases(row,col,:)=-1*angle(hsig); %find phase angle for each pixel in each frame
+        handles.freq(row,col,:)=gradient((-1*angle(hsig)));
+        handles.xs(row,col,:)=real(hsig);
+        handles.ys(row,col,:)=imag(hsig); %find components of phase angle
     end
 end
 
@@ -99,7 +104,7 @@ imshow(A, [-pi pi],'ColorMap',ddd,'InitialMagnification', 800);
     
 % Choose default command line output for phasemapping
 handles.output = hObject;
-
+delete(wb)
 % Update handles structure
 guidata(hObject, handles);
 
@@ -156,8 +161,6 @@ if isempty(handles.row)==0
     plot(x(1:i),y(1:i),'+','Color',handles.cm(k))
     axes(handles.phase)
     plot(1:length(a),a,'Color',handles.cm(k))
-    figure,
-    plot(1:length(freq),freq,'Color',handles.cm(k))
     end
 end
 axes(handles.phase)
@@ -192,12 +195,21 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = guidata(hObject);
-for i=1:handles.num-handles.CL
+answer = questdlg('Warning! Video can not be pasued currently, would you still like to play?', ...
+	'Video Warning', ...
+	'Yes','No','No');
+% Handle response
+switch answer
+    case 'Yes'
+   for i=1:handles.num-handles.CL
     handles.frame=i;
     set(handles.slider1,'Value',handles.frame/(handles.num-handles.CL));
     slider1_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
 end
+    case 'No'
+end
+
 guidata(hObject, handles);
 
 % --- Executes on button press in clear.

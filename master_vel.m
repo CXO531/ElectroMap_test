@@ -23,7 +23,7 @@ t=XYT(:,3);
 % Parameters for local polynomial fitting (change these according to data)
 winx=winsize;     % size of x-window (mm)
 winy=winsize;     % size of y-window  (mm)
-wint=wint;     % size of time window  (s)?????????????????
+    % size of time window  (s)?????????????????
 
 how_many=8; % minimum number of points included in each fit
 
@@ -39,7 +39,7 @@ twin=wint;      % time window
 how_many2=8;    % minimum number of velocity estimates to include in avg.
 
 % Velocity estimation
-[vx,vy,v,X,Y,T,good,G,S,vgood]= velcalc2(fitxyt,resthresh,mspersamp,MINV,MAXV,xwin,ywin,twin,how_many2);
+[vx,vy,v,X,Y,~,good,~,~,~]= velcalc2(fitxyt,resthresh,mspersamp,MINV,MAXV,xwin,ywin,twin,how_many2);
 vx=vx(good);  % GOod estimates of x-velocity
 vy=vy(good);  % Good estimates of y-vel
 v=v(good);    % good estimates of vel. magnitude

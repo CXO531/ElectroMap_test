@@ -1,4 +1,16 @@
 function ggg = maskload(filename, startRow, endRow)
+
+% function for applying loaded map (generated automatically from MatLab)
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
+
 %IMPORTFILE1 Import numeric data from a text file as a matrix.
 %   GGG = IMPORTFILE1(FILENAME) Reads data from text file FILENAME for the
 %   default selection.

@@ -1,4 +1,15 @@
 function varargout = compare(varargin)
+% Function for running Pixel Info GUI (NAME MIXUP, will be rectified in subsquent releases). 
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, please see 'licsence.txt' at ...
+
+% Last Updated -
+
+% Update Summary
+
 % COMPARE MATLAB code for compare.fig
 %      PIXELINFO, by itself, creates a new PIXELINFO or raises the existing
 %      singleton*.
@@ -21,7 +32,7 @@ function varargout = compare(varargin)
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
 % Edit the above text to modify the response to help pixelinfo
-%% Change map procedure caxis to stop weird shit  
+ 
 % Last Modified by GUIDE v2.5 08-Dec-2017 16:07:22
 
 % Begin initialization code - DO NOT EDIT
@@ -63,11 +74,21 @@ im=g1data.I;
 handles.t=str2num(get(g1data.t,'String'));
     
 wb=waitbar(0.5,'Transfering Maps');
-%maps 
-[handles.map,~,handles.alll]=mapsbaby(get(g1data.aptime1,'Value'),str2num(get(g1data.framerate,'String')),handles.t,g1data.I,g1data.images,g1data.averageBeat,g1data.outlier,str2num(get(g1data.cmin,'String')),str2num(get(g1data.cmax,'String')),get(g1data.tfilt,'Value'),str2num(get(g1data.beforeGUI,'String')),get(g1data.apdbl,'Value'),str2num(get(g1data.apdblnum,'String')),g1data.medifilt);
-[handles.isomap,~,~,~,~,~,~,~,~,~,handles.vout,handles.quivers_Xout,handles.quivers_Yout,handles.quivers_vxout,handles.quivers_vyout]...
-    =cvmap(str2num(get(g1data.pixelsize,'String')),str2num(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,1,str2num(get(g1data.minvel,'String')),str2num(get(g1data.maxvel,'String')),get(g1data.velalgo,'Value'),...
-     str2num(get(g1data.MINt,'String')),str2num(get(g1data.MAXt,'String')),str2num(get(g1data.winsize,'String')),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.wint,'String')),0,str2num(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2num(get(g1data.splineN,'String'))); %do iso map on opening to speed up later
+% %maps 
+% [handles.map,~,handles.alll]=mapsbaby(get(g1data.aptime1,'Value'),str2num(get(g1data.framerate,'String')),handles.t,g1data.I,g1data.images,g1data.averageBeat,g1data.outlier,str2num(get(g1data.cmin,'String')),str2num(get(g1data.cmax,'String')),get(g1data.tfilt,'Value'),str2num(get(g1data.beforeGUI,'String')),get(g1data.apdbl,'Value'),str2num(get(g1data.apdblnum,'String')),g1data.medifilt);
+% [handles.isomap,~,~,~,~,~,~,~,~,~,handles.vout,handles.quivers_Xout,handles.quivers_Yout,handles.quivers_vxout,handles.quivers_vyout]...
+%     =cvmap(str2num(get(g1data.pixelsize,'String')),str2num(get(g1data.framerate,'String')),g1data.cvimages,g1data.mask,1,str2num(get(g1data.minvel,'String')),str2num(get(g1data.maxvel,'String')),get(g1data.velalgo,'Value'),...
+%      str2num(get(g1data.MINt,'String')),str2num(get(g1data.MAXt,'String')),str2num(get(g1data.winsize,'String')),str2num(get(g1data.beforeGUI,'String')),str2num(get(g1data.wint,'String')),0,str2num(get(g1data.t,'String')),get(g1data.tfilt,'Value'),get(g1data.usespline,'Value'),str2num(get(g1data.splineN,'String'))); %do iso map on opening to speed up later
+handles.map=g1data.apdmap;
+handles.alll=g1data.apalll;
+
+handles.isomap=g1data.actmap;
+handles.vout=g1data.vout;
+handles.quivers_Xout=g1data.quivers_Xout;
+handles.quivers_Yout=g1data.quivers_Yout;
+handles.quivers_vxout=g1data.quivers_vxout;
+handles.quivers_vyout=g1data.quivers_vyout;
+
 delete(wb)
 
 if get(handles.imchoice,'Value') == 1

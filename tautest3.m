@@ -1,5 +1,15 @@
-% function for taking an avearge beat image file and making an apd map
+
 function [map,meann,alll,onedev,vari,SE,gofmap] = tautest3(tstar,tend,framerate,maskedimage,imagestack,avbeat,outs,cmin,cmax,tfilt,rcut)
+% Function for calculating relaxation constant 
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
 
 [rows cols] = size(imagestack(:,:,1))
 counter = 0;

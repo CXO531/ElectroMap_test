@@ -1,6 +1,16 @@
-% function for taking an avearge beat image file and making an apd map
+
 function [signalav] = mapsbabyonepix(startopt,framerate,t,maskedimage,imagestack,avbeat,row,col,colopt,before,after,apdblopt,apdblnum,tstar,tend,normalise,tfilt)
-%opt added to allows color may overlay
+% function for taking a single beat image file and extracting and displaying 
+% signal from chosen pixel
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
 [rows cols num] = size(imagestack(:,:,:))
 [~,~,num] = size(avbeat(:,:,:))
 
@@ -417,5 +427,3 @@ ax=gca;
 axis tight
 end
 
-row
-col

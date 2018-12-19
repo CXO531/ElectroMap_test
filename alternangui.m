@@ -1,4 +1,15 @@
 function varargout = alternangui(varargin)
+
+% Function for running Alternan GUI 
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, please see 'licsence.txt' at ...
+
+% Last Updated -
+
+% Update Summary
 % ALTERNANGUI MATLAB code for alternangui.fig
 %      ALTERNANGUI, by itself, creates a new ALTERNANGUI or raises the existing
 %      singleton*.
@@ -54,7 +65,7 @@ function alternangui_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for alternangui
 handles.output = hObject;
-
+wb=waitbar(0.5,'Performing Alternans Calcualtions');
 handles.output = hObject;
 h = findobj('Tag','ElectroMap');
 %% get data from ElectroMap
@@ -131,11 +142,9 @@ end
 
 %Averages
 [handles.av_normsig,handles.av_pixamp,handles.av_t_pixamp,handles.av_pixload,handles.av_t_pixload,handles.av_pixapd,...
-    handles.av_amp_map,handles.av_load_map,handles.av_apd_map,...
-    handles.av_smalllocs,handles.av_biglocs,handles.av_smallPks,handles.av_bigPks,handles.av_smallloads_t,handles.av_bigloads_t,handles.av_smallloads,handles.av_bigloads]...
-    =alfn(imcomplement(g1data.averages),handles.framerate,handles.pks,handles.locs,handles.before,handles.after,handles.tfilt,handles.AP)
-pause(10)
-
+handles.av_amp_map,handles.av_load_map,handles.av_apd_map,...
+handles.av_smalllocs,handles.av_biglocs,handles.av_smallPks,handles.av_bigPks,handles.av_smallloads_t,handles.av_bigloads_t,handles.av_smallloads,handles.av_bigloads]...
+=alfn(imcomplement(g1data.averages),handles.framerate,handles.pks,handles.locs,handles.before,handles.after,handles.tfilt,handles.AP);
 
 %results box
 handles.L=mean(handles.av_bigPks)
@@ -188,7 +197,7 @@ guidata(hObject, handles);
 slider1_Callback(hObject, eventdata, handles)
 Tracesource_Callback(hObject, eventdata, handles)
 handles = guidata(hObject);
-
+delete(wb)
 guidata(hObject, handles);
 
 % UIWAIT makes alternangui wait for user response (see UIRESUME)
@@ -356,11 +365,11 @@ hcb=colorbar;
 colormap('jet');
 hcb.Location = 'southoutside'
 ax = gca;
-axpos = ax.Position;
 cpos = hcb.Position;
 cpos(4) = 4*cpos(4);
 hcb.Position = cpos;
-ax.Position = axpos;
+
+
 hcb.TicksMode='manual';hcb.TickLabelsMode='manual';
 
 %amp and load maps
@@ -740,32 +749,8 @@ if get(handles.Tracesource,'Value') == 1
         hx2 = plot([(handles.locs(pp+1)+handles.after) (handles.locs(pp+1)+handles.after)], ylim, 'Color', 'k');
     end
     
+    
     if traceopt == 4
-        axes(handles.trace)
-        cla reset
-        yyaxis right
-        hold on
-        plot(handles.av_t_pixamp,handles.av_pixamp,'ob');
-        plot(handles.av_t_pixload,handles.av_pixload,'xb');
-        yyaxis left
-        plot(handles.av_t_pixamp(2:end),handles.av_amp_map,'rx');
-        plot(handles.av_t_pixamp(2:end),handles.av_load_map,'ro');
-        hx = plot([(handles.locs(pp+1)-handles.before) (handles.locs(pp+1)-handles.before)], ylim, 'Color', 'k');
-        hx2 = plot([(handles.locs(pp+1)+handles.after) (handles.locs(pp+1)+handles.after)], ylim, 'Color', 'k');
-    end
-    
-    
-    if traceopt == 5
-        axes(handles.trace)
-        cla reset
-        plot(handles.av_t_pixamp,handles.av_pixapd,'xb-');
-        hold on
-        plot(handles.av_t_pixamp(2:end),handles.av_apd_map,'rx-');
-        hx = plot([(handles.locs(pp+1)-handles.before) (handles.locs(pp+1)-handles.before)], ylim, 'Color', 'k');
-        hx2 = plot([(handles.locs(pp+1)+handles.after) (handles.locs(pp+1)+handles.after)], ylim, 'Color', 'k');
-    end
-    
-    if traceopt == 6
         axes(handles.trace)
         cla reset
         plot(handles.av_normsig,'k');
@@ -873,31 +858,8 @@ if get(handles.Tracesource,'Value') == 2 && handles.isZoomed == 0;
         ax=gca; ax.YColor= 'r';
     end
     
+    
     if traceopt == 4
-        axes(handles.trace)
-        cla reset
-        yyaxis right
-        hold on
-        plot(squeeze(handles.t_pixamp(handles.row,handles.col,:)),squeeze(handles.pixamp(handles.row,handles.col,:)),'ob');
-        plot(squeeze(handles.t_pixload(handles.row,handles.col,:)),squeeze(handles.pixload(handles.row,handles.col,:)),'xb');
-        yyaxis left
-        plot(squeeze(handles.t_pixamp(handles.row,handles.col,2:end)),squeeze(handles.amp_map(handles.row,handles.col,:)),'rx');
-        plot(squeeze(handles.t_pixamp(handles.row,handles.col,2:end)),squeeze(handles.load_map(handles.row,handles.col,:)),'ro');
-    end
-    
-    if traceopt == 5
-        axes(handles.trace)
-        cla reset
-        xlabel('Time (ms)')
-        ylabel('Normalised Fluorescence')
-        plot(squeeze(handles.t_pixamp(handles.row,handles.col,:)),squeeze(handles.pixapd(handles.row,handles.col,:)),'xb-');
-        hold on
-        plot(squeeze(handles.t_pixamp(handles.row,handles.col,2:end)),squeeze(handles.apd_map(handles.row,handles.col,:)),'rx-');
-        ylabel('APD/APD Alternan (ms)')
-        ax=gca; ax.YColor= 'r';
-    end
-    
-    if traceopt == 6
         axes(handles.trace)
         cla reset
         plot(norms,'k');
@@ -1039,27 +1001,6 @@ if get(handles.Tracesource,'Value') == 3
     end
     
     if traceopt == 4
-        axes(handles.trace)
-        cla reset
-        yyaxis right
-        plot(handles.roi_t_pixamp,handles.roi_pixamp,'ob');
-        hold on
-        plot(handles.roi_t_pixload,handles.roi_pixload,'xb');
-        yyaxis left
-        plot(handles.roi_t_pixamp(2:end),handles.roi_amp_map,'rx');
-        plot(handles.roi_t_pixamp(2:end),handles.roi_load_map,'ro');
-    end
-    
-    
-    if traceopt == 5
-        axes(handles.trace)
-        cla reset
-        plot(handles.roi_t_pixamp,handles.roi_pixapd,'xb-');
-        hold on
-        plot(handles.roi_t_pixamp(2:end),handles.roi_apd_map,'rx-');
-    end
-    
-    if traceopt == 6
         axes(handles.trace)
         cla reset
         plot(handles.roi_normsig,'k');

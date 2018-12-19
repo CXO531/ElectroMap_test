@@ -1,6 +1,15 @@
 function [num_images,rect,mask,im,I,boundaries,camopt,frame1,fluoim,rois] = OMimreload(fname,cropchoice,quinnieopt,threshop,threshman,rect,inversion,camopt,fluo_opt,roinum,roisum,frame1,num_images)
-% Function for taking raw image file and applying thersholding, final
-% output - regradless of input, will be uint16 mask. 
+% Function for taking raw image file and applying thersholding without having to reread whole image stack, final
+% output - regradless of input, will be uint16 mask.
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
 id='MATLAB:imagesci:tifftagsread:expectedTagDataFormat';
 warning('off',id)
 id='MATLAB:imagesci:tiffmexutils:libtiffWarning';
@@ -105,7 +114,7 @@ im = imcrop(im, rect);
 fluoim=imcrop(fluoim,rect);
 frame1=imcrop(frame1,rect);
 end
-rois=zeros(size(im))
+rois=zeros(size(im));
 % manual roi crop
 if quinnieopt == 1
 figure,

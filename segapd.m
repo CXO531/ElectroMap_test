@@ -1,6 +1,15 @@
-%% Function for doing analysis in segEP
-function [apd,tau,DI,ttp,maxvelup] = segapd(apdopt,tauopt,DIopt,ttpopt,maxupvelopt,Fluo,framerate,f,before,after,tfilt,t,startopt,apdblopt,apdblnum,tstar,tend);
 
+function [apd,tau,DI,ttp,maxvelup] = segapd(apdopt,tauopt,DIopt,ttpopt,maxupvelopt,Fluo,framerate,f,before,after,tfilt,t,startopt,apdblopt,apdblnum,tstar,tend);
+% Function for doing analysis of paramaters measured in single file analysis GUI
+% Chris O'Shea and Ting Yue Yu, University of Birmingham 
+% Maintained by Chris O'Shea - Email CXO531@bham.ac.uk for any queries
+
+% Release Date - 
+% For licence information, Please see 'licsence.txt' at ...
+ 
+% Last Updated -
+ 
+% Update Summary
 
 
 %% Normalise option

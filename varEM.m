@@ -1,5 +1,6 @@
-% fuction for finding specified vraible from EM config file
+
 function [x]=varEM(fstr,varname,numswitch)
+% function for finding specified variable from EM config file (produced automatically using MATLAB)
 
 %% Find Variable
 ind=strfind(fstr,[varname,'=']);
